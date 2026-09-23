@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Compile Remove="Mapping\**" />
+    <EmbeddedResource Remove="Mapping\**" />
+    <None Remove="Mapping\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Loto3000.DataAccess\Loto3000.DataAccess.csproj" />
+    <ProjectReference Include="..\Loto3000.Domain\Loto3000.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.23.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

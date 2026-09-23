@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Pick seven numbers, follow the draw, and celebrate the Loto3000 winners."
+    />
+    <meta name="theme-color" content="#102b40" />
+    <title>Loto3000 — Seven numbers. Endless possibilities.</title>
+    <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <nav class="container navbar navbar-dark" aria-label="Main navigation">
+        <a class="navbar-brand brand" href="#play">LOTO<span>3000</span></a>
+        <button
+          id="nav-toggle"
+          class="btn btn-outline-light nav-toggle"
+          type="button"
+          aria-controls="nav-links"
+          aria-expanded="false"
+        >
+          Menu
+        </button>
+        <div id="nav-links" class="nav-links">
+          <a class="nav-link" href="#play" data-view="play">Play Loto</a>
+          <a class="nav-link" href="#winners" data-view="winners"
+            >Winners Board</a
+          >
+          <a
+            id="admin-nav"
+            class="nav-link"
+            href="#admin"
+            data-view="admin"
+            hidden
+            >Admin Panel</a
+          >
+          <a id="auth-nav" class="nav-link" href="#auth" data-view="auth"
+            >Login / Register</a
+          >
+          <span id="account-label" class="account-label" hidden></span>
+          <button
+            id="logout-button"
+            class="btn btn-sm btn-outline-light"
+            type="button"
+            hidden
+          >
+            Log out
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content" class="container py-4 py-md-5">
+      <div
+        id="notice"
+        class="alert d-flex justify-content-between align-items-start gap-3"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        <span id="notice-text"></span>
+        <button
+          id="dismiss-notice"
+          class="btn-close"
+          type="button"
+          aria-label="Dismiss notification"
+        ></button>
+      </div>
+
+      <section id="view-play" class="view" aria-labelledby="play-title">
+        <div class="hero mb-4">
+          <div>
+            <p class="eyebrow">A little luck starts here</p>
+            <h1 id="play-title">
+              Seven numbers.<br /><span>Endless possibilities.</span>
+            </h1>
+            <p class="mb-0">
+              Choose 7 unique numbers from 1–37. We draw 8. Match at least 3 to
+              win.
+            </p>
+          </div>
+          <div class="session-pill" aria-live="polite">
+            <span class="status-dot"></span
+            ><span id="session-label">Loading session…</span>
+          </div>
+        </div>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-lg-8">
+            <div class="card lottery-card">
+              <div class="card-body p-3 p-md-4">
+                <div
+                  class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3"
+                >
+                  <h2 class="h4 mb-0">Build your ticket</h2>
+                  <span
+                    id="selection-count"
+                    class="selection-count"
+                    aria-live="polite"
+                    >0 / 7 selected</span
+                  >
+                </div>
+                <form id="ticket-form">
+                  <div
+                    id="number-grid"
+                    class="number-grid"
+                    role="group"
+                    aria-label="Choose exactly seven numbers from one to thirty-seven"
+                  ></div>
+                  <div class="d-flex gap-2 mt-3">
+                    <button
+                      id="quick-pick"
+                      class="btn btn-outline-secondary btn-sm"
+                      type="button"
+                    >
+                      Quick pick
+                    </button>
+                    <button
+                      id="clear-picks"
+                      class="btn btn-outline-secondary btn-sm"
+                      type="button"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <p class="small text-secondary mt-4 mb-2">YOUR NUMBERS</p>
+                  <div
+                    id="selected-numbers"
+                    class="number-row selected-row"
+                    aria-live="polite"
+                    aria-label="Selected numbers"
+                  ></div>
+                  <p id="login-prompt" class="mt-3 mb-2">
+                    <a href="#auth">Log in or create an account</a> to submit
+                    your ticket.
+                  </p>
+                  <button
+                    id="submit-ticket"
+                    class="btn btn-loto w-100 mt-3"
+                    type="submit"
+                    disabled
+                  >
+                    Confirm ticket
+                  </button>
+                  <p class="small text-secondary mb-0 mt-2">
+                    Your ticket joins the displayed active session. All seven
+                    numbers must be different.
+                  </p>
+                </form>
+              </div>
+            </div>
+            <div
+              id="ticket-success"
+              class="card success-card mt-3"
+              role="status"
+              hidden
+            >
+              <div class="card-body">
+                <h3 class="h5">You're in!</h3>
+                <p id="ticket-success-text"></p>
+                <div id="confirmed-numbers" class="number-row mb-3"></div>
+                <a href="#winners" class="btn btn-outline-success"
+                  >Go to the Winners Board</a
+                >
+              </div>
+            </div>
+          </div>
+          <aside class="col-lg-4" aria-labelledby="prizes-title">
+            <div class="card lottery-card prize-card">
+              <div class="card-body p-4">
+                <p class="eyebrow">What's at stake</p>
+                <h2 id="prizes-title" class="h4">The prize lineup</h2>
+                <ul class="prize-list">
+                  <li>
+                    <span><strong>7</strong> matches</span><b>Car · Jackpot</b>
+                  </li>
+                  <li>
+                    <span><strong>6</strong> matches</span><b>Vacation</b>
+                  </li>
+                  <li>
+                    <span><strong>5</strong> matches</span><b>TV</b>
+                  </li>
+                  <li>
+                    <span><strong>4</strong> matches</span><b>$100 Gift Card</b>
+                  </li>
+                  <li>
+                    <span><strong>3</strong> matches</span><b>$50 Gift Card</b>
+                  </li>
+                </ul>
+                <p class="small text-secondary mb-0">
+                  Fewer than 3 matches earns no prize. Results appear after an
+                  administrator completes the draw.
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section
+          id="my-tickets-section"
+          class="mt-5"
+          aria-labelledby="my-tickets-title"
+          hidden
+        >
+          <div class="section-heading">
+            <h2 id="my-tickets-title" class="h4 mb-0">My tickets</h2>
+            <button
+              id="refresh-tickets"
+              class="btn btn-sm btn-outline-secondary"
+              type="button"
+            >
+              Refresh
+            </button>
+          </div>
+          <div class="card lottery-card table-responsive">
+            <table class="table align-middle mb-0">
+              <caption class="visually-hidden">
+                Your tickets and their draw results
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Ticket / Session</th>
+                  <th scope="col">Your numbers</th>
+                  <th scope="col">Status / Prize</th>
+                  <th scope="col">Submitted</th>
+                </tr>
+              </thead>
+              <tbody id="my-tickets-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section
+        id="view-winners"
+        class="view"
+        aria-labelledby="winners-title"
+        hidden
+      >
+        <p class="eyebrow">The lucky lineup</p>
+        <div class="section-heading">
+          <div>
+            <h1 id="winners-title">Winners Board</h1>
+            <p class="text-secondary mb-0">
+              Every winning ticket, newest draw first. No login required.
+            </p>
+          </div>
+          <button
+            id="refresh-winners"
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            Refresh board
+          </button>
+        </div>
+        <div class="card lottery-card table-responsive">
+          <table class="table align-middle mb-0">
+            <caption class="visually-hidden">
+              Public lottery winners
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Session #</th>
+                <th scope="col">Winner full name</th>
+                <th scope="col">Matched numbers</th>
+                <th scope="col">Prize won</th>
+                <th scope="col">Draw date</th>
+              </tr>
+            </thead>
+            <tbody id="winners-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        id="view-admin"
+        class="view"
+        aria-labelledby="admin-title"
+        hidden
+      >
+        <p class="eyebrow">Control room</p>
+        <div class="section-heading">
+          <div>
+            <h1 id="admin-title">Admin Panel</h1>
+            <p class="text-secondary mb-0">
+              Close the current session and start a fresh round in one secure
+              transaction.
+            </p>
+          </div>
+          <button
+            id="refresh-session"
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            Refresh session
+          </button>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="stat-card">
+              <span>Active session</span><strong id="admin-session">—</strong>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card">
+              <span>Submitted tickets</span
+              ><strong id="admin-ticket-count">—</strong>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card">
+              <span>Opened</span
+              ><strong id="admin-started" class="stat-date">—</strong>
+            </div>
+          </div>
+        </div>
+        <div class="card lottery-card mb-4">
+          <div
+            class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3"
+          >
+            <p class="mb-0">
+              Draw 8 unique numbers, calculate every prize, and open the next
+              session.<br /><span class="small text-secondary"
+                >This action cannot be undone. Empty sessions can also be
+                drawn.</span
+              >
+            </p>
+            <button
+              id="initiate-draw"
+              class="btn btn-loto"
+              type="button"
+              disabled
+            >
+              Initiate draw
+            </button>
+          </div>
+        </div>
+        <section id="draw-result" aria-labelledby="draw-result-title" hidden>
+          <h2 id="draw-result-title" class="h4"></h2>
+          <div
+            id="drawn-numbers"
+            class="number-row draw-balls my-3"
+            aria-label="Drawn numbers"
+          ></div>
+          <p id="draw-summary" class="text-secondary"></p>
+          <div class="card lottery-card table-responsive">
+            <table class="table align-middle mb-0">
+              <caption class="visually-hidden">
+                Winners from the most recent initiated draw
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Session #</th>
+                  <th scope="col">Winner full name</th>
+                  <th scope="col">Matched numbers</th>
+                  <th scope="col">Prize won</th>
+                  <th scope="col">Draw date</th>
+                </tr>
+              </thead>
+              <tbody id="draw-winners-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section
+        id="view-auth"
+        class="view auth-section mx-auto"
+        aria-labelledby="auth-title"
+        hidden
+      >
+        <p class="eyebrow text-center">Your next lucky moment</p>
+        <h1 id="auth-title" class="text-center">Welcome to Loto3000</h1>
+        <div class="card lottery-card mt-4">
+          <div class="card-body p-4">
+            <div
+              class="auth-tabs mb-4"
+              role="tablist"
+              aria-label="Account access"
+            >
+              <button
+                id="login-tab"
+                class="btn active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="login-panel"
+              >
+                Log in
+              </button>
+              <button
+                id="register-tab"
+                class="btn"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="register-panel"
+                tabindex="-1"
+              >
+                Create account
+              </button>
+            </div>
+            <div id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+              <form id="login-form">
+                <div class="mb-3">
+                  <label for="login-username" class="form-label">Username</label
+                  ><input
+                    id="login-username"
+                    name="username"
+                    class="form-control"
+                    autocomplete="username"
+                    maxlength="32"
+                    required
+                  />
+                </div>
+                <div class="mb-4">
+                  <label for="login-password" class="form-label">Password</label
+                  ><input
+                    id="login-password"
+                    name="password"
+                    type="password"
+                    class="form-control"
+                    autocomplete="current-password"
+                    maxlength="72"
+                    required
+                  />
+                </div>
+                <button class="btn btn-loto w-100" type="submit">Log in</button>
+              </form>
+            </div>
+            <div
+              id="register-panel"
+              role="tabpanel"
+              aria-labelledby="register-tab"
+              hidden
+            >
+              <form id="register-form">
+                <div class="mb-3">
+                  <label for="register-username" class="form-label"
+                    >Username</label
+                  ><input
+                    id="register-username"
+                    name="username"
+                    class="form-control"
+                    autocomplete="username"
+                    minlength="3"
+                    maxlength="32"
+                    pattern="[a-zA-Z0-9_.\-]+"
+                    aria-describedby="username-help"
+                    required
+                  />
+                  <div id="username-help" class="form-text">
+                    3–32 letters, digits, underscores, periods, or hyphens.
+                  </div>
+                </div>
+                <div class="row g-3 mb-3">
+                  <div class="col-sm-6">
+                    <label for="first-name" class="form-label">First name</label
+                    ><input
+                      id="first-name"
+                      name="firstName"
+                      class="form-control"
+                      autocomplete="given-name"
+                      maxlength="80"
+                      required
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="last-name" class="form-label">Last name</label
+                    ><input
+                      id="last-name"
+                      name="lastName"
+                      class="form-control"
+                      autocomplete="family-name"
+                      maxlength="80"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label
+                  ><input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="form-control"
+                    autocomplete="email"
+                    maxlength="254"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="register-password" class="form-label"
+                    >Password</label
+                  ><input
+                    id="register-password"
+                    name="password"
+                    type="password"
+                    class="form-control"
+                    autocomplete="new-password"
+                    minlength="8"
+                    maxlength="72"
+                    aria-describedby="password-help"
+                    required
+                  />
+                  <div id="password-help" class="form-text">
+                    At least 8 characters with uppercase, lowercase, a digit,
+                    and a symbol.
+                  </div>
+                </div>
+                <p class="small text-secondary">
+                  Winning players' first and last names appear on the public
+                  Winners Board.
+                </p>
+                <button class="btn btn-loto w-100" type="submit">
+                  Create account &amp; play
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="container py-4 site-footer">
+      <span>LOTO3000</span><span>Pick 7. Draw 8. Celebrate the matches.</span>
+    </footer>
+    <noscript
+      ><p class="container alert alert-warning">
+        JavaScript is required to sign in, select numbers, and view the lottery
+        results.
+      </p></noscript
+    >
+  </body>
+</html>
